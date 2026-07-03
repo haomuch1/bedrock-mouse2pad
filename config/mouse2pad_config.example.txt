@@ -1,0 +1,13 @@
+# mouse2pad configuration
+# ------------------------
+# The installer copies this file to "mouse2pad_config.txt" next to mouse2pad.py.
+# Edits to that file are picked up LIVE (within ~1 second) - no restart needed.
+
+# sensitivity: camera speed. Higher = faster. Try 0.010 (slow) .. 0.040 (fast).
+sensitivity=0.020
+
+# invert_y: 0 = mouse up looks up (normal). 1 = inverted.
+invert_y=0
+
+# wheel_pulse_ms: how long each scroll notch holds LB/RB (hotbar cycle), in ms.
+wheel_pulse_ms=40
