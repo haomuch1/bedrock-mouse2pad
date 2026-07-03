@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 220" width="880" height="220" role="img" aria-label="bedrock-mouse2pad">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1b2a"/>
+      <stop offset="1" stop-color="#16324f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- panel -->
+  <rect x="0" y="0" width="880" height="220" rx="18" fill="url(#bg)"/>
+  <rect x="0" y="0" width="880" height="6" rx="3" fill="#3ddc84"/>
+
+  <!-- title + tagline -->
+  <text x="48" y="92" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="46" font-weight="700" fill="#f2f5f7">bedrock-mouse2pad</text>
+  <text x="50" y="132" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" fill="#9fb3c8">Dead mouse in Minecraft: Bedrock (GDK)? Play again.</text>
+  <text x="50" y="162" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#5fd0a0">mouse &#8594; virtual Xbox controller &#183; via ViGEmBus</text>
+
+  <!-- motif: mouse -> arrow -> gamepad -->
+  <g transform="translate(620,74)" fill="none" stroke="#cfe3f2" stroke-width="3">
+    <!-- mouse -->
+    <rect x="0" y="0" width="40" height="72" rx="20"/>
+    <line x1="20" y1="4" x2="20" y2="30"/>
+    <rect x="16" y="12" width="8" height="12" rx="4" fill="#cfe3f2" stroke="none"/>
+  </g>
+
+  <!-- arrow -->
+  <g transform="translate(676,110)" stroke="#3ddc84" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <line x1="0" y1="0" x2="34" y2="0"/>
+    <polyline points="24,-9 34,0 24,9"/>
+  </g>
+
+  <!-- gamepad -->
+  <g transform="translate(726,84)" fill="none" stroke="#cfe3f2" stroke-width="3">
+    <rect x="0" y="8" width="96" height="52" rx="24"/>
+    <!-- d-pad -->
+    <line x1="22" y1="34" x2="38" y2="34"/>
+    <line x1="30" y1="26" x2="30" y2="42"/>
+    <!-- buttons -->
+    <circle cx="66" cy="28" r="4" fill="#3ddc84" stroke="none"/>
+    <circle cx="74" cy="38" r="4" fill="#cfe3f2" stroke="none"/>
+    <circle cx="58" cy="38" r="4" fill="#cfe3f2" stroke="none"/>
+    <circle cx="66" cy="48" r="4" fill="#cfe3f2" stroke="none"/>
+  </g>
+</svg>

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="bedrock-mouse2pad" width="820">
+</p>
+
 # bedrock-mouse2pad
 
 **Minecraft: Bedrock Edition (Windows GDK build) killed your mouse in-game? This gets you playing again.**
@@ -56,6 +60,10 @@ Minecraft sees "a controller," and responds normally. You play with your mouse.
 - Admin rights **once**, only for the first-time ViGEmBus driver install (then a reboot)
 
 ## Install
+
+**Easiest (no PowerShell needed):** on this page click the green **`< > Code` ▸ Download ZIP**, extract it, then **double-click `install.bat`**. Approve the admin / "ViGEmBus Setup" prompts if they appear.
+
+Prefer PowerShell? From the extracted folder:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
