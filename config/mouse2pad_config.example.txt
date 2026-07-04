@@ -3,11 +3,49 @@
 # The installer copies this file to "mouse2pad_config.txt" next to mouse2pad.py.
 # Edits to that file are picked up LIVE (within ~1 second) - no restart needed.
 
+# === Camera (gameplay mode) =================================================
 # sensitivity: camera speed. Higher = faster. Try 0.010 (slow) .. 0.040 (fast).
 sensitivity=0.020
 
-# invert_y: 0 = mouse up looks up (normal). 1 = inverted.
+# sensitivity_x / sensitivity_y: fine-trim horizontal vs vertical speed on top of
+# `sensitivity`. 1.0 = no change. e.g. sensitivity_y=0.8 to slow vertical aim.
+sensitivity_x=1.0
+sensitivity_y=1.0
+
+# expo: power-curve response. 0 = linear (raw). Higher = gentler for small mouse
+# movements (finer aim near center) while keeping the same top speed. Try 0.3-0.8.
+expo=0.0
+
+# invert_y: 0 = mouse up looks up (normal). 1 = inverted. (Camera only.)
 invert_y=0
 
-# wheel_pulse_ms: how long each scroll notch holds LB/RB (hotbar cycle), in ms.
+# wheel_pulse_ms: how long each scroll notch holds its mapped output, in ms.
+# Gameplay: LB/RB hotbar cycle. Menu: right-stick-Y list scroll.
 wheel_pulse_ms=40
+
+# === Menus & inventory (menu mode) ==========================================
+# In menu mode the mouse drives Bedrock's on-screen pointer via the LEFT stick,
+# left click = A (select), right click = X, scroll = list scroll.
+
+# menu_sensitivity: pointer speed on menu/inventory screens. Tuned separately from
+# camera `sensitivity`. Range ~0.04 (slow) .. 0.15 (fast); default 0.08.
+menu_sensitivity=0.080
+
+# menu_expo: power curve for the menu pointer. 0 = linear. Higher keeps slow,
+# precise moves controllable while big sweeps still cross the whole grid. Try 0.3-0.7.
+menu_expo=0.5
+
+# pin_cursor_in_menus: 1 = while in menu mode, snap the stray Windows cursor to the
+# center of Minecraft's window each frame so you track a single pointer (the game's).
+# Purely visual (input comes from raw deltas). Only active in menu mode + focused.
+pin_cursor_in_menus=1
+
+# auto_menu_mode: 1 = auto-switch by watching whether Windows shows the cursor
+# (Bedrock hides it in gameplay, shows it in menus). 0 = manual toggle only.
+# If auto-detection is flaky on your machine, set this to 0 and use the toggle key.
+auto_menu_mode=1
+
+# menu_toggle_key: manual key to flip menu <-> gameplay. Manual overrides auto.
+# Options include: capslock, scrolllock, pause, insert, home, end, apps, f13..f24,
+# and the mouse side buttons x1 / x2 (a.k.a. mouse4 / mouse5) since they're unused.
+menu_toggle_key=capslock

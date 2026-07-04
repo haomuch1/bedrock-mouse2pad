@@ -90,6 +90,10 @@ Stops the helper (unplugging the pad), removes the task and files, and **asks** 
 
 ## Controls & mapping
 
+mouse2pad has **two modes** because Bedrock uses the sticks differently in the world vs. in menus. It switches automatically (and you can force it with a key — see [Menus & inventory](#menus--inventory)).
+
+**Gameplay mode** (in the world):
+
 | Your input | Virtual controller | In Minecraft |
 |---|---|---|
 | Move mouse | Right stick | Look / aim camera |
@@ -97,7 +101,22 @@ Stops the helper (unplugging the pad), removes the task and files, and **asks** 
 | Right click | Left trigger | Use / place / eat |
 | Middle click | Y button | *(rebindable — Bedrock has no true "pick block" on a pad)* |
 | Scroll up / down | LB / RB | Cycle hotbar |
-| **Ctrl + Alt + M** | — | **Pause / resume** translation |
+
+**Menu mode** (inventory / chest / crafting / pause & settings screens):
+
+| Your input | Virtual controller | In Minecraft |
+|---|---|---|
+| Move mouse | Left stick | Move the on-screen pointer |
+| Left click | A button | Select / pick up / place stack |
+| Right click | X button | *(split stack / secondary, per screen)* |
+| Scroll up / down | Right stick Y | Scroll lists / pages |
+
+**Always active:**
+
+| Your input | Effect |
+|---|---|
+| **Ctrl + Alt + M** | **Pause / resume** translation |
+| **Caps Lock** *(default, configurable)* | **Manually toggle** menu ⇄ gameplay mode |
 
 ## Configuration
 
@@ -106,10 +125,53 @@ Edit `%LOCALAPPDATA%\Mouse2PadBedrock\mouse2pad_config.txt` — changes apply **
 | Setting | Meaning |
 |---|---|
 | `sensitivity` | Camera speed. Higher = faster. `0.010` slow … `0.040` fast (default `0.020`). |
-| `invert_y` | `0` = mouse up looks up (normal); `1` = inverted. |
-| `wheel_pulse_ms` | How long each scroll notch holds LB/RB. |
+| `sensitivity_x` / `sensitivity_y` | Per-axis trim on top of `sensitivity`. `1.0` = no change; e.g. `sensitivity_y=0.8` slows vertical aim. |
+| `expo` | Power-curve response. `0` = linear; higher = gentler for small movements (finer aim near center) with the same top speed. Try `0.3`–`0.8`. |
+| `invert_y` | `0` = mouse up looks up (normal); `1` = inverted (camera only). |
+| `wheel_pulse_ms` | How long each scroll notch holds its mapped output (hotbar in gameplay, list-scroll in menus). |
+| `menu_sensitivity` | Menu **pointer** speed (left stick), tuned separately from the camera. Range ~`0.04` slow … `0.15` fast (default `0.08`). |
+| `menu_expo` | Power curve for the menu pointer. `0` = linear; higher keeps slow moves precise while big sweeps cross the whole grid (default `0.5`). |
+| `pin_cursor_in_menus` | `1` = in menu mode, snap the stray Windows cursor to the window center each frame so you see a single pointer; `0` = leave it. |
+| `auto_menu_mode` | `1` = auto-switch menu/gameplay by watching cursor visibility; `0` = manual toggle only. |
+| `menu_toggle_key` | Manual mode-toggle key. `capslock` (default), `scrolllock`, `pause`, `insert`, `home`, `end`, `apps`, `f13`–`f24`, or mouse side buttons `x1` / `x2`. |
 
 **Tune the camera:** open the config, change `sensitivity`, save, and feel the difference in-game a second later.
+
+---
+
+## Menus & inventory
+
+Bedrock's inventory, chest, crafting, and settings screens don't use the camera stick — they move an **on-screen pointer with the left stick** and select with **A**. So mouse2pad has a dedicated **menu mode**:
+
+- **Move mouse** → moves the pointer (speed = `menu_sensitivity`, shaped by `menu_expo`).
+- **Left click** → **A** (select / pick up / place a stack).
+- **Right click** → **X** (split stack / secondary action, depending on the screen).
+- **Scroll wheel** → nudges the **right stick Y** to scroll lists and pages.
+
+**One pointer, not two.** Because the GDK input path is broken, Windows leaves its own cursor roaming freely over the game while Bedrock draws a *second* pointer from the controller — two arrows, desynced, which feels awful. So in menu mode mouse2pad **pins the Windows cursor to the center of the game window** every frame (`pin_cursor_in_menus=1`). Your motion still comes from raw mouse deltas, so this is purely visual: it parks the stray arrow out of the way and you track the single in-game pointer. Pinning is active **only** while menu mode is on and Minecraft is focused — it releases instantly in gameplay, on Alt-Tab, or when paused with Ctrl+Alt+M. *(The tool doesn't fully hide the OS cursor: doing that reliably needs a global, process-wide cursor swap that's risky if the helper ever crashes, so it's deliberately skipped.)*
+
+**If the pointer scale feels off:** raise `menu_sensitivity` (default `0.08`, range ~`0.04`–`0.15`) so a normal hand motion crosses the grid. Add `menu_expo` (default `0.5`) if fast sweeps are fine but fine placement is twitchy — it softens small movements while keeping big ones fast. Both apply live on save.
+
+**Switching modes — two ways, and they work together:**
+
+1. **Automatic** (`auto_menu_mode=1`, default): mouse2pad watches whether Windows is showing the mouse cursor. Bedrock **hides** the cursor during gameplay and **shows** it on menu screens, so opening your inventory flips it to menu mode and closing it flips back — no key needed.
+2. **Manual toggle** (default **Caps Lock**): press it to force a mode. **Manual always wins** — the instant you press the key, auto-detection steps aside and you're in manual control (press again to flip back).
+
+> **If auto-switching misbehaves on your machine:** the GDK build's input path is broken, so it may not manage the cursor like a healthy game. If menu mode triggers at the wrong times (or never), set **`auto_menu_mode=0`** and just use the toggle key — everything degrades gracefully. Prefer a key that doesn't collide with anything? Set `menu_toggle_key` to a mouse side button (`x1`/`x2`) or an F13–F24 key. Every mode switch is written to `mouse2pad.log` so you can see what it's doing.
+
+---
+
+## Getting the best camera feel
+
+The camera is **velocity-based** (mouse movement = how fast the stick is pushed), not native 1:1 aim — see [Honest caveats](#honest-caveats). These knobs get it as close as possible:
+
+- **Start with `sensitivity`.** This is your master speed. Nudge it until a normal wrist motion turns you about the right amount, then stop.
+- **Add a little `expo`** (try `0.4`) if fast turns feel fine but tiny corrections feel twitchy. Expo keeps your top speed but softens small movements, so lining up a block or a mob is easier.
+- **Trim one axis** with `sensitivity_x` / `sensitivity_y` if vertical feels faster/slower than horizontal (common). Lowering `sensitivity_y` to `0.8`–`0.9` often feels more natural.
+- **Fast flicks carry over** automatically: a single big swipe that would overshoot a full stick push is spread across the next frame instead of hitting a wall, so quick 180s feel smooth rather than clipped.
+- **`invert_y`** flips vertical look if you fly/aim inverted. (It only affects the camera, never the menu pointer.)
+
+All of these are live — save the config and feel the change in about a second.
 
 ---
 
@@ -138,11 +200,34 @@ Press **Ctrl + Alt + M** to pause, or Alt-Tab out of Minecraft (translation only
 
 ---
 
+## Is it the GameInput Service? (a root-cause lead worth checking)
+
+GDK builds of Bedrock read mouse input through Microsoft's **GameInput** layer (part of Gaming Services), not the normal Windows message path. A broken or stopped GameInput layer would kill mouse input *in Bedrock specifically* while keyboard, controller, and the desktop cursor all keep working — which matches this bug's signature. On some machines this may be the actual cause, so it's worth a two-minute check **before** relying on this workaround:
+
+```powershell
+# Service state + startup type (Manual/on-demand is the correct default):
+Get-Service GameInputSvc, GameInputRedistService | Format-Table Name, Status, StartType
+# Gaming Services app health (want Status = Ok):
+Get-AppxPackage Microsoft.GamingServices | Select-Object Name, Version, Status
+# Any recent GameInput/GamingServices errors?
+Get-WinEvent -FilterHashtable @{ LogName='System','Application'; Level=1,2,3;
+  StartTime=(Get-Date).AddDays(-7) } -ErrorAction SilentlyContinue |
+  Where-Object { $_.Message -match 'GameInput|GamingServices' } |
+  Select-Object TimeCreated, ProviderName, Id, LevelDisplayName
+```
+
+- **`GameInputSvc` stopped or missing** → start it (`Start-Service GameInputSvc`, admin) and retest; if missing, install the current GameInput redistributable / Gaming Services.
+- **Running but the mouse is still dead in-game** (as on the author's machine — service healthy, no error events) → this appears to be a **bug inside GameInput's mouse handling or Bedrock's use of it**, which a Gaming Services *reinstall* won't fix (that reinstalls the Store app, not the `GameInput.dll` / `GameInputSvc.exe` redist binaries serviced by Windows Update). In that case it's a genuine game/OS bug — use this workaround and, ideally, [report it to Mojang](https://bugs.mojang.com).
+
+> **Tip:** to test whether your *native* mouse works, press **Ctrl + Alt + M** to pause mouse2pad first — otherwise the translator masks the result.
+
+---
+
 ## Honest caveats
 
 - **The camera feel is velocity-based, not native 1:1 mouse aim.** A controller stick reports *how far you've pushed it* (a turn speed), while a mouse reports *how far you moved*. This tool maps mouse movement to stick deflection, so aiming feels like a very responsive controller, **not** like raw mouse aim. It's very playable; it is not pixel-perfect FPS aiming.
 - **This is a workaround, not a fix.** If your mouse cursor moves on screen but Minecraft Bedrock won't register clicks or camera movement — while keyboard and controller work fine — this tool fixes that. The root cause is a **game-side bug in the GDK builds of Minecraft Bedrock (1.21.120+)**, not anything on your PC. **Uninstall this tool once Mojang patches it.**
-- **Tested on:** Windows 11 + Bedrock **1.21.12x** (GDK). Other versions/configs may vary.
+- **Tested on:** Windows 11 (25H2, build 26200) + Bedrock **1.26.32** (GDK). Bug still present as of this version. Other versions/configs may vary.
 - **Use at your own risk.** See the [no-warranty disclaimer](#license--credits).
 
 ## Reported environments where this bug appears (and what is *not* the cause)
